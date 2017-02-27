@@ -6,7 +6,13 @@ amqp.connect("amqp://thanhdc:abc@123@104.223.20.159",function(err,conn){
         var msg = process.argv.slice(2).join(' ') || "Hello World!";
         
         ch.assertQueue(q,{durable:true});
-        ch.sendToQueue(q,new Buffer(msg),{persistent:true});
-        console.log("[x] Sen %s",msg);
+        
+        var i = 0;
+        setTimeout(function(){
+            msg = i + msg ;
+            ch.sendToQueue(q,new Buffer(msg),{persistent:true});
+            console.log("[x] Sen %s",msg);
+            i = i + 1;
+        },3000);
     });
 });
