@@ -7,11 +7,11 @@ amqp.connect("amqp://thanhdc:abc@123@104.223.20.159",function(err,conn){
         
         ch.assertQueue(q,{durable:true});
 
-        for(var i = 0; i < 100 ; i++){
+        for(var i = 0; i < 15 ; i++){
             setTimeout(function(){
-                msg = i + msg ;
-                ch.sendToQueue(q,new Buffer(msg),{persistent:true});
-                console.log("[x] Send %s",msg);
+                var msgSend = i + msg ;
+                ch.sendToQueue(q,new Buffer(msgSend),{persistent:true});
+                console.log("[x] Send %s",msgSend);
                 i = i + 1;
             },3000);
         }
