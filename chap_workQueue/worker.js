@@ -4,7 +4,7 @@ amqp.connect("amqp://thanhdc:abc@123@104.223.20.159",function(err,conn){
     conn.createChannel(function(err,ch){
         var q = "task_queue";
         ch.assertQueue(q,{durable:true});
-        //ch.prefetch(1);
+        ch.prefetch(2);
         ch.consume(q,function(msg){
             var secs  = msg.content.toString().split('.').length - 1;
             console.log("Sec: ",secs);
