@@ -1,6 +1,6 @@
 var amqp = require("amqplib/callback_api");
 
-amqp.connect('amqp:http://104.223.20.159',function(err,conn){
+amqp.connect('amqp://thanhdc:abc@123@104.223.20.159',function(err,conn){
 
     conn.createChannel(function(err,ch){
         var q = "hello";
