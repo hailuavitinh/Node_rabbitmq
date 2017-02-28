@@ -11,7 +11,7 @@ if(args.length == 0){
 amqp.connect("amqp://thanhdc:abc@123@104.223.20.159",function(err,conn){
     conn.createChannel(function(err,ch){
         var ex = "direct_logs";
-        ch.assertExchange(ex,"direct",{durable:true});
+        ch.assertExchange(ex,"direct",{durable:false});
         ch.assertQueue("",{exclusive: true},function(err,q){
             console.log("[*] Waiting for logs. To exit press Ctrl + C");
 
