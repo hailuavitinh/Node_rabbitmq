@@ -6,7 +6,7 @@ if(args.length == 0){
 }
 
 
-amqp.connect("amqp://thanhdc:abc@123@104.233.20.159",function(err,conn){
+amqp.connect("amqp://thanhdc:abc@123@104.223.20.159",function(err,conn){
     conn.createChannel(function(err,ch){
         var ex = "topic_logs";
         ch.assertExchange(ex,"topic",{durable:false});
