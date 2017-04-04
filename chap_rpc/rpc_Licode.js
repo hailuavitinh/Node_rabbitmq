@@ -1,35 +1,53 @@
-var amqp = require("amqplib/callback_api");
+// var amqp = require("amqplib/callback_api");
 
-amqp.connect("amqp://thanhdc:123@192.168.1.23:5672",function(err,conn){
-    if(err){
-        console.log("Errr:",err)
-    } else {
-        console.log("Connect Sucess");
-        conn.createChannel(function(err,ch){
-            if(err){
-                console.log("Chanel error:",err);
-            }
+// amqp.connect("amqp://thanhdc:123@192.168.1.23:5672",function(err,conn){
+//     if(err){
+//         console.log("Errr:",err)
+//     } else {
+//         console.log("Connect Sucess");
+//         conn.createChannel(function(err,ch){
+//             if(err){
+//                 console.log("Chanel error:",err);
+//             }
 
-            ch.assertExchange("rpcExchange","direct",{durable:false});
-            console.log("Scuess exchange");
-            ch.assertQueue("",{exclusive:true},function(err,q){
-                if(err){
-                    console.log("Error Queue",err);
-                }
-                var cor = q.queue;
+//             ch.assertExchange("rpcExchange","direct",{durable:false,autoDelete:true});
+//             console.log("Scuess exchange");
+//             ch.assertQueue("",{exclusive:true},function(err,q){
+//                 if(err){
+//                     console.log("Error Queue",err);
+//                 }
+//                 var cor = q.queue;
 
-                ch.consume(q.queue,function(msg){
-                    console.log("Mesage:",msg)
-                });
-                var message = {
-                    method:"getUsersInRoom",
-                    args:["586c7d164b7c38741c129bca"],
-                    corrID: cor, 
-                    replyTo: q.queue
-                };
-                ch.publish("rpcExchange","erizoController_58de02f4b425a0915c5b7c1a",message)
+//                 console.log("Queue: ",cor);
+//                 ch.consume(q.queue,function(msg){
+//                     console.log("Mesage:",msg)
+//                 },{noAck:true});
+//                 var message = {
+//                     method:"getUsersInRoom",
+//                     args:["58dc8624d90c3c58538c8496"]
+//                 };
 
-            });// end assertQueue
-        });
-    }
+//                 console.log("Message string: ",JSON.stringify(message));
+
+//                 ch.publish("rpcExchange","erizoController_58e3241db473d95f8c9cad18",new Buffer(JSON.stringify(message)),{correlationId:cor,replyTo:q.queue})
+
+//             });// end assertQueue
+//         });
+//     }
+// });
+
+var amqp = require("amqp");
+var connection = amqp.createConnection({host:"192.168.1.23",login:"thanhdc",password:"123"});
+
+connection.on("ready",function(){
+    var rpExchange = connection.exchange('rpcExchange',{type:"direct"},function(exchange){
+        var clientQueue = connection.queue('',function(q){
+            console.log("Queue :",clientQueue.name);
+            clientQueue.bind('rpcExchange',clientQueue.name);
+            clientQueue.subscribe(function(message){
+                console.log("Received: ",message)
+            });// end subscribe
+            rpExchange.publish("erizoController_58e34a07f2fec979e81d34f2",{method:"getUsersInRoom",args:["58dc8624d90c3c58538c8496"],corrID:clientQueue.name,replyTo:clientQueue.name});
+        }); // end queue
+    }); // end exchnage
 });
