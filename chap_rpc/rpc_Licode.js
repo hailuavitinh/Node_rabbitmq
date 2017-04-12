@@ -37,7 +37,7 @@
 // });
 
 var amqp = require("amqp");
-var connection = amqp.createConnection({host:"192.168.1.23",login:"thanhdc",password:"123"});
+var connection = amqp.createConnection({host:"192.168.1.24",login:"thanhdc",password:"123"});
 
 connection.on("ready",function(){
     var rpExchange = connection.exchange('rpcExchange',{type:"direct"},function(exchange){
@@ -47,7 +47,7 @@ connection.on("ready",function(){
             clientQueue.subscribe(function(message){
                 console.log("Received: ",message)
             });// end subscribe
-            rpExchange.publish("erizoController_58e34a07f2fec979e81d34f2",{method:"getUsersInRoom",args:["58dc8624d90c3c58538c8496"],corrID:clientQueue.name,replyTo:clientQueue.name});
+            rpExchange.publish("erizoController_58ecb31514076333961db1ac",{method:"getUsersInRoom",args:["58dc8624d90c3c58538c8496"],corrID:clientQueue.name,replyTo:clientQueue.name});
         }); // end queue
     }); // end exchnage
 });
